@@ -62,23 +62,25 @@ const AppContent = () => {
         estimate_delivery: estimate.delivery,
         project_name: formData.projectName,
       };
-      /* 
-      // Supabase integration commented out for prototype
+      
+      // Supabase integration
       const { error: dbError } = await supabase
         .from("estimates")
         .insert([submissionData]);
+      
       if (dbError) throw dbError;
+      
       const { error: functionError } = await supabase.functions.invoke(
         "send-estimate-email",
         { body: { user_email: email, formData: formData, estimate: estimate } }
       );
-      if (functionError) throw functionError;
-      */
       
-      // Simulate network delay for prototype
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log("Mock Submission Data:", submissionData);
+      if (functionError) {
+        console.warn("Email function error:", functionError);
+        // Don't throw - we still want to show success if data was saved
+      }
       
+      console.log("Submission successful:", submissionData);
       setIsSubmitted(true);
     } catch (error) {
       console.error("Error submitting estimate:", error);
