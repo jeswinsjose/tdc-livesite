@@ -12,7 +12,6 @@ import FAQ from './components/FAQ';
 import Stats from './components/Stats';
 import LocationPage from './components/LocationPage';
 import ContactSection from './components/ContactSection';
-import { QuoteModal } from './components/QuoteModal';
 import EstimatorPage from './components/Estimator/EstimatorPage';
 import FloatingContact from './components/FloatingContact';
 
@@ -39,7 +38,6 @@ export const LOCATIONS_DATA = [
 ];
 
 const HomePage: React.FC = () => {
-  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const navigate = useNavigate();
 
   // Navigate to location page with SEO-friendly URL
@@ -146,8 +144,6 @@ const HomePage: React.FC = () => {
                 </div>
             </div>
       </footer>
-
-      {isQuoteOpen && <QuoteModal onClose={() => setIsQuoteOpen(false)} />}
 
 
     </div>

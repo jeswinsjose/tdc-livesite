@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
 import { Menu, X, ArrowRight } from 'lucide-react';
-import { QuoteModal } from './QuoteModal';
+import { useNavigate } from 'react-router-dom';
 
 const Navigation: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeImage, setActiveImage] = useState<string | null>(null);
-  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const navigate = useNavigate();
 
   const menuItems = [
     { label: 'Services', img: 'https://picsum.photos/1920/1080?grayscale&blur=2' },
@@ -32,7 +32,7 @@ const Navigation: React.FC = () => {
           <div className="w-[1px] h-4 bg-white/20" />
 
           <button 
-            onClick={() => setIsQuoteOpen(true)}
+            onClick={() => navigate('/estimator')}
             className="flex items-center gap-2 text-xs md:text-sm font-medium text-brand-accent hover:text-white transition-colors"
           >
             <span className="uppercase tracking-widest whitespace-nowrap">Get Quote</span>
@@ -82,9 +82,6 @@ const Navigation: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Quote Modal */}
-      {isQuoteOpen && <QuoteModal onClose={() => setIsQuoteOpen(false)} />}
     </>
   );
 };
