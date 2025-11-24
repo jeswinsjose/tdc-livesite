@@ -270,6 +270,7 @@ const LoadingScreen = () => (
 export default function EstimatorPage() {
   const [mapsLoaded, setMapsLoaded] = React.useState(false);
   const [mapsError, setMapsError] = React.useState(false);
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
   // If maps fails to load, show content anyway after 500ms
   React.useEffect(() => {
@@ -281,11 +282,20 @@ export default function EstimatorPage() {
     return () => clearTimeout(timeout);
   }, [mapsLoaded]);
 
+  // If no API key, render without Maps
+  if (!apiKey) {
+    return (
+      <EstimateProvider>
+        <AppContent />
+      </EstimateProvider>
+    );
+  }
+
   // Always render content immediately, let Maps load in background
   return (
     <EstimateProvider>
       <LoadScript
-        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}
+        googleMapsApiKey={apiKey}
         libraries={libraries}
         onLoad={() => setMapsLoaded(true)}
         onError={() => setMapsError(true)}
