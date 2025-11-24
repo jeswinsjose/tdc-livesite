@@ -21,12 +21,21 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'dist',
-      // Copy _redirects file to dist
+      // Optimize chunk sizes
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html')
+        },
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            'maps': ['@react-google-maps/api'],
+            'ui-vendor': ['lucide-react', 'gsap'],
+            'supabase': ['@supabase/supabase-js']
+          }
         }
-      }
+      },
+      chunkSizeWarningLimit: 1000
     }
   };
 });
