@@ -1,0 +1,5 @@
+[functions.send-estimate-email]
+enabled = true
+verify_jwt = true
+import_map = "./functions/send-estimate-email/deno.json"
+entrypoint = "./functions/send-estimate-email/index.ts"

@@ -19,7 +19,7 @@ const Navigation: React.FC = () => {
   return (
     <>
       {/* Floating Dock */}
-      <div className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+      <div className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none transform-gpu translate-z-0">
         <div className="pointer-events-auto glass-panel rounded-full px-5 py-3 flex items-center gap-4 md:gap-6 shadow-2xl backdrop-blur-xl bg-black/40 border border-white/10">
           <button 
             onClick={() => setIsOpen(true)}

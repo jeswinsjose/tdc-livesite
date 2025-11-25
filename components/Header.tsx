@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ locations = DEFAULT_LOCATIONS, onLocati
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-40 px-6 py-6 flex items-center justify-between pointer-events-none">
+      <nav className="sticky top-0 w-full z-40 px-6 py-6 flex items-center justify-between pointer-events-none">
         {/* Logo - Pointer events auto to allow clicking */}
         <div 
             onClick={() => {

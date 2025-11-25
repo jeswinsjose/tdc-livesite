@@ -43,7 +43,7 @@ const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-bold mb-1">Phone</h4>
-                  <p className="text-gray-400 text-sm">+1 (800) 504-2658</p>
+                  <p className="text-gray-400 text-sm">+12135719077</p>
                   <p className="text-xs text-gray-500 mt-1">Mon-Fri, 9am - 6pm EST</p>
                 </div>
               </div>
@@ -54,7 +54,7 @@ const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-bold mb-1">Email</h4>
-                  <p className="text-gray-400 text-sm">projects@thedraftingcompany.com</p>
+                  <p className="text-gray-400 text-sm">sales@thedraftingcompany.com</p>
                   <p className="text-xs text-gray-500 mt-1">24 Hour Response Time</p>
                 </div>
               </div>

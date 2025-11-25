@@ -7,7 +7,7 @@ const FloatingContact: React.FC = () => {
   return (
     <>
       {/* Mobile Version - Expandable Sidebar */}
-      <div className="lg:hidden fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center">
+      <div className="lg:hidden fixed right-0 top-[50svh] -translate-y-1/2 z-50 flex items-center">
         {/* Expanded Contact Info */}
         <div
           className={`bg-black/90 backdrop-blur-md border border-white/10 rounded-l-lg transition-all duration-300 overflow-hidden ${
@@ -26,7 +26,7 @@ const FloatingContact: React.FC = () => {
             </div>
             
             <a
-              href="tel:+1234567890"
+              href="tel:+12135719077"
               className="flex items-center gap-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group"
             >
               <div className="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center group-hover:bg-brand-accent/30 transition-colors">
@@ -34,12 +34,12 @@ const FloatingContact: React.FC = () => {
               </div>
               <div>
                 <div className="text-[10px] text-gray-500 uppercase tracking-wider">Call Us</div>
-                <div className="text-white text-sm font-mono">+1 (234) 567-890</div>
+                <div className="text-white text-sm font-mono">+12135719077</div>
               </div>
             </a>
 
             <a
-              href="mailto:info@tdc.com"
+              href="mailto:sales@thedraftingcompany.com"
               className="flex items-center gap-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group"
             >
               <div className="w-8 h-8 rounded-full bg-brand-accent/20 flex items-center justify-center group-hover:bg-brand-accent/30 transition-colors">
@@ -47,7 +47,7 @@ const FloatingContact: React.FC = () => {
               </div>
               <div>
                 <div className="text-[10px] text-gray-500 uppercase tracking-wider">Email Us</div>
-                <div className="text-white text-sm font-mono">info@tdc.com</div>
+                <div className="text-white text-sm font-mono">sales@thedraftingcompany.com</div>
               </div>
             </a>
           </div>
@@ -74,7 +74,7 @@ const FloatingContact: React.FC = () => {
         {/* Phone Icon */}
         <div className="group relative">
           <a
-            href="tel:+1234567890"
+            href="tel:+12135719077"
             className="w-14 h-14 rounded-full bg-brand-accent text-black flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 group"
           >
             <Phone size={24} className="animate-pulse group-hover:animate-none" />
@@ -82,14 +82,14 @@ const FloatingContact: React.FC = () => {
           {/* Tooltip */}
           <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-black/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 whitespace-nowrap">
             <div className="text-[10px] text-gray-500 uppercase tracking-wider">Call Us</div>
-            <div className="text-white text-sm font-mono">+1 (234) 567-890</div>
+            <div className="text-white text-sm font-mono">+12135719077</div>
           </div>
         </div>
 
         {/* Email Icon */}
         <div className="group relative">
           <a
-            href="mailto:info@tdc.com"
+            href="mailto:sales@thedraftingcompany.com"
             className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shadow-lg hover:bg-brand-accent hover:text-black transition-all duration-300 hover:scale-110 group"
           >
             <Mail size={24} />
@@ -97,7 +97,7 @@ const FloatingContact: React.FC = () => {
           {/* Tooltip */}
           <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-black/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 whitespace-nowrap">
             <div className="text-[10px] text-gray-500 uppercase tracking-wider">Email Us</div>
-            <div className="text-white text-sm font-mono">info@tdc.com</div>
+            <div className="text-white text-sm font-mono">sales@thedraftingcompany.com</div>
           </div>
         </div>
       </div>
