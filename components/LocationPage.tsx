@@ -6,6 +6,7 @@ import Header from './Header';
 import FloatingContact from './FloatingContact';
 import FAQ from './FAQ';
 import { LOCATIONS_DATA } from '../App';
+import cityData from '../data/city.json';
 
 interface LocationPageProps {
   city: string;
@@ -46,6 +47,12 @@ const LocationPage: React.FC<LocationPageProps> = ({ city, state, type, onBack, 
         return `Serving the greater ${city} metropolitan area with rapid-response laser scanning and architectural drafting. Our local ${state} team understands the specific zoning and documentation requirements of the region.`;
     }
   };
+  
+  // Find dynamic city data
+  const cityInfo = cityData.cities.find(c => c.city === city);
+  const dynamicAddress = cityInfo?.Address || `<strong>${city} Office</strong><br/>Serving the greater ${city} area`;
+  const dynamicPhone = cityInfo?.PresentedNumber || '(800) 504-2658';
+  const dynamicPhoneLink = cityInfo?.presentedNumberNoSpace ? `tel:+1${cityInfo.presentedNumberNoSpace}` : 'tel:+18005042658';
 
   return (
     <div className="bg-brand-dark min-h-screen text-white selection:bg-brand-accent selection:text-black">
@@ -142,6 +149,40 @@ const LocationPage: React.FC<LocationPageProps> = ({ city, state, type, onBack, 
                           <div className="font-bold text-white">LOD 400</div>
                           <div className="text-xs text-gray-500 uppercase">Fabrication Ready</div>
                       </div>
+                  </div>
+              </div>
+              
+              {/* Dynamic Contact Info Block */}
+              <div className="mt-12 p-8 border border-white/10 bg-white/5 rounded-xl flex flex-col md:flex-row items-center justify-between gap-8">
+                  <div className="flex items-start gap-4">
+                      <div className="p-3 bg-brand-accent/10 rounded-lg">
+                          <MapPin className="text-brand-accent" size={24} />
+                      </div>
+                      <div>
+                          <h3 className="font-display font-bold text-lg mb-2">Local Office</h3>
+                          <div 
+                              className="text-gray-400 text-sm leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: dynamicAddress }}
+                          />
+                      </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-6">
+                      <div className="h-12 w-[1px] bg-white/10 hidden md:block"></div>
+                      <a 
+                          href={dynamicPhoneLink}
+                          className="flex items-center gap-3 group"
+                      >
+                          <div className="p-3 bg-brand-accent/10 rounded-lg group-hover:bg-brand-accent transition-colors">
+                              <Users className="text-brand-accent group-hover:text-black transition-colors" size={24} />
+                          </div>
+                          <div>
+                              <div className="text-xs text-gray-500 uppercase tracking-wider">Call Local Team</div>
+                              <div className="font-mono text-xl font-bold text-white group-hover:text-brand-accent transition-colors">
+                                  {dynamicPhone}
+                              </div>
+                          </div>
+                      </a>
                   </div>
               </div>
           </div>

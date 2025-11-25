@@ -14,6 +14,9 @@ import LocationPage from './components/LocationPage';
 import ContactSection from './components/ContactSection';
 import EstimatorPage from './components/Estimator/EstimatorPage';
 import FloatingContact from './components/FloatingContact';
+import ClientLogos from './components/ClientLogos';
+import FeatureSections from './components/FeatureSections';
+import IndustryTabs from './components/IndustryTabs';
 
 // Shared Location Data
 export const LOCATIONS_DATA = [
@@ -77,6 +80,9 @@ const HomePage: React.FC = () => {
                 </div>
 
                 <Services />
+                <ClientLogos />
+                <FeatureSections />
+                <IndustryTabs />
                 <MapSection onLocationSelect={(cityName) => {
                     const loc = LOCATIONS_DATA.find(l => l.city === cityName);
                     if (loc) handleLocationSelect(loc);

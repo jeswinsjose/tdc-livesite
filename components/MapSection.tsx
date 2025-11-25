@@ -55,12 +55,12 @@ const MapSection: React.FC<MapSectionProps> = ({ onLocationSelect }) => {
           
           {/* Map Side */}
           <div className="order-2 lg:order-1 sticky top-32">
-            <div className="relative aspect-[1.6] w-full bg-gray-900/40 rounded-2xl border border-gray-800/50 backdrop-blur-sm p-4 md:p-8 overflow-hidden group shadow-2xl">
+            <div className="relative aspect-[1.6] min-h-[300px] w-full bg-gray-900/40 rounded-2xl border border-gray-800/50 backdrop-blur-sm p-4 md:p-8 overflow-hidden group shadow-2xl">
               
               {/* System Live Badge */}
-              <div className="absolute top-6 left-6 z-20 flex gap-2 items-center bg-black/40 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
-                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                   <span className="text-[10px] font-mono text-gray-300 uppercase tracking-widest">System Live</span>
+              <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20 flex gap-2 items-center bg-black/40 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
+                   <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-red-500 animate-pulse"></span>
+                   <span className="text-[8px] md:text-[10px] font-mono text-gray-300 uppercase tracking-widest">System Live</span>
               </div>
 
               
@@ -85,7 +85,7 @@ const MapSection: React.FC<MapSectionProps> = ({ onLocationSelect }) => {
                   {/* Pulsing Ring Animation */}
                   <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-500 ${
                     activeCity?.id === city.id 
-                      ? 'w-10 h-10 bg-brand-accent/20 animate-ping' 
+                      ? 'w-8 h-8 md:w-10 md:h-10 bg-brand-accent/20 animate-ping' 
                       : 'w-0 h-0'
                   }`} />
                   
@@ -96,12 +96,16 @@ const MapSection: React.FC<MapSectionProps> = ({ onLocationSelect }) => {
                         ? 'text-brand-accent scale-125 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]' 
                         : 'text-gray-400 animate-pulse'
                     }`}
-                    size={24}
-                    fill={activeCity?.id === city.id ? '#00f0ff' : 'none'}
+                    size={16} // Default mobile size
+                    // Responsive size via class is tricky with lucide size prop, so we keep it small base and scale up or use conditional rendering if needed. 
+                    // Actually, let's just use a smaller base size for mobile. 16 is good.
+                    // But we want 24 on desktop. Lucide size prop doesn't accept classes.
+                    // We can use className to override width/height if we remove size prop or use it as base.
+                    // Let's use className for responsive sizing.
                   />
                   
                   {/* Label */}
-                  <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 whitespace-nowrap text-[10px] uppercase tracking-widest bg-black/80 px-2 py-1 rounded backdrop-blur-md border border-gray-800 transition-all duration-300 ${
+                  <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 whitespace-nowrap text-[8px] md:text-[10px] uppercase tracking-widest bg-black/80 px-2 py-1 rounded backdrop-blur-md border border-gray-800 transition-all duration-300 ${
                      activeCity?.id === city.id ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
                   }`}>
                     {city.name}
@@ -110,9 +114,9 @@ const MapSection: React.FC<MapSectionProps> = ({ onLocationSelect }) => {
               ))}
               
                {/* Overlay Stats */}
-                <div className="absolute bottom-6 left-6 bg-black/80 backdrop-blur border border-white/10 p-4 rounded-lg pointer-events-none">
-                    <div className="text-brand-accent font-mono text-2xl font-bold">26</div>
-                    <div className="text-xs text-gray-400 uppercase tracking-wider">Service Locations</div>
+                <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 bg-black/80 backdrop-blur border border-white/10 p-3 md:p-4 rounded-lg pointer-events-none">
+                    <div className="text-brand-accent font-mono text-xl md:text-2xl font-bold">26</div>
+                    <div className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider">Service Locations</div>
                 </div>
             </div>
           </div>

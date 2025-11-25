@@ -1,8 +1,31 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, CheckCircle, Send } from 'lucide-react';
+import { getUserLocation, getNearestCity } from '../utils/location';
 
 const ContactSection: React.FC = () => {
+  const [contactInfo, setContactInfo] = useState({
+    address: '123 Innovation Drive,<br/>New York, NY 10001',
+    phone: '(213) 571-9077'
+  });
+
+  useEffect(() => {
+    const initLocation = async () => {
+      const location = await getUserLocation();
+      if (location) {
+        const nearestCity = getNearestCity(location.latitude, location.longitude);
+        if (nearestCity) {
+          setContactInfo({
+            address: nearestCity.Address || '123 Innovation Drive,<br/>New York, NY 10001',
+            phone: nearestCity.PresentedNumber || '(213) 571-9077'
+          });
+        }
+      }
+    };
+
+    initLocation();
+  }, []);
+
   return (
     <section id="contact" className="py-24 bg-brand-dark border-t border-white/5 relative overflow-hidden">
       {/* Background Elements */}
@@ -33,7 +56,10 @@ const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-bold mb-1">Headquarters</h4>
-                  <p className="text-gray-400 text-sm">123 Innovation Drive,<br/>New York, NY 10001</p>
+                  <p 
+                    className="text-gray-400 text-sm"
+                    dangerouslySetInnerHTML={{ __html: contactInfo.address }}
+                  />
                 </div>
               </div>
               
@@ -43,7 +69,7 @@ const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-bold mb-1">Phone</h4>
-                  <p className="text-gray-400 text-sm">+12135719077</p>
+                  <p className="text-gray-400 text-sm">{contactInfo.phone}</p>
                   <p className="text-xs text-gray-500 mt-1">Mon-Fri, 9am - 6pm EST</p>
                 </div>
               </div>
