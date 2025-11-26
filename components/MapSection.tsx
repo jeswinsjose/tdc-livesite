@@ -6,6 +6,7 @@ import { City } from '../types';
 
 const CITIES: City[] = [
   { id: 'atl', name: 'Atlanta', x: 76, y: 68 },
+  { id: 'aus', name: 'Austin', x: 53, y: 72 },
   { id: 'bos', name: 'Boston', x: 90, y: 28 },
   { id: 'chi', name: 'Chicago', x: 70, y: 38 },
   { id: 'dal', name: 'Dallas', x: 54, y: 70 },
@@ -25,8 +26,10 @@ const CITIES: City[] = [
   { id: 'orl', name: 'Orlando', x: 82, y: 80 },
   { id: 'phi', name: 'Philadelphia', x: 87, y: 35 },
   { id: 'phx', name: 'Phoenix', x: 28, y: 64 },
+  { id: 'sa', name: 'San Antonio', x: 52, y: 74 },
   { id: 'sd', name: 'San Diego', x: 20, y: 64 },
   { id: 'sf', name: 'San Francisco', x: 14, y: 50 },
+  { id: 'sj', name: 'San Jose', x: 15, y: 52 },
   { id: 'sea', name: 'Seattle', x: 16, y: 20 },
   { id: 'stl', name: 'St. Louis', x: 66, y: 52 },
   { id: 'tb', name: 'Tampa Bay', x: 80, y: 82 },

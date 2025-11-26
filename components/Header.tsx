@@ -10,13 +10,13 @@ interface HeaderProps {
 
 // Fallback if not provided (though App.tsx now provides it)
 const DEFAULT_LOCATIONS = [
-  { city: 'New York', state: 'NY', type: 'HQ' },
-  { city: 'Los Angeles', state: 'CA', type: 'Hub' },
   { city: 'Chicago', state: 'IL', type: 'Hub' },
-  { city: 'Houston', state: 'TX', type: 'Hub' },
-  { city: 'Phoenix', state: 'AZ', type: 'Branch' },
-  { city: 'Philadelphia', state: 'PA', type: 'Branch' },
   { city: 'Dallas', state: 'TX', type: 'Hub' },
+  { city: 'Houston', state: 'TX', type: 'Hub' },
+  { city: 'Los Angeles', state: 'CA', type: 'Hub' },
+  { city: 'New York', state: 'NY', type: 'HQ' },
+  { city: 'Philadelphia', state: 'PA', type: 'Branch' },
+  { city: 'Phoenix', state: 'AZ', type: 'Branch' },
   { city: 'Seattle', state: 'WA', type: 'Tech Hub' },
 ];
 
