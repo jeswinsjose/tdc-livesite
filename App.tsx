@@ -20,24 +20,24 @@ import IndustryTabs from './components/IndustryTabs';
 
 // Shared Location Data
 export const LOCATIONS_DATA = [
-  { city: 'New York', state: 'NY', type: 'HQ' },
-  { city: 'Los Angeles', state: 'CA', type: 'Hub' },
-  { city: 'Chicago', state: 'IL', type: 'Hub' },
-  { city: 'Houston', state: 'TX', type: 'Hub' },
-  { city: 'Phoenix', state: 'AZ', type: 'Branch' },
-  { city: 'Philadelphia', state: 'PA', type: 'Branch' },
-  { city: 'San Antonio', state: 'TX', type: 'Branch' },
-  { city: 'San Diego', state: 'CA', type: 'Branch' },
-  { city: 'Dallas', state: 'TX', type: 'Hub' },
-  { city: 'San Jose', state: 'CA', type: 'Branch' },
-  { city: 'Austin', state: 'TX', type: 'Branch' },
-  { city: 'Seattle', state: 'WA', type: 'Tech Hub' },
-  { city: 'Denver', state: 'CO', type: 'Branch' },
-  { city: 'Washington', state: 'DC', type: 'Gov' },
-  { city: 'Boston', state: 'MA', type: 'Branch' },
-  { city: 'Miami', state: 'FL', type: 'Hub' },
-  { city: 'Atlanta', state: 'GA', type: 'Hub' },
-  { city: 'San Francisco', state: 'CA', type: 'Innovation' },
+  { city: 'New York', state: 'NY', type: 'HQ', image: '/locations/new-York.webp' },
+  { city: 'Los Angeles', state: 'CA', type: 'Hub', image: '/locations/los-angeles.webp' },
+  { city: 'Chicago', state: 'IL', type: 'Hub', image: '/locations/chicago.webp' },
+  { city: 'Houston', state: 'TX', type: 'Hub', image: '/locations/houston.webp' },
+  { city: 'Phoenix', state: 'AZ', type: 'Branch', image: '/locations/phoenix.webp' },
+  { city: 'Philadelphia', state: 'PA', type: 'Branch', image: '/locations/philadelphia.webp' },
+  { city: 'San Antonio', state: 'TX', type: 'Branch', image: '/locations/dallas.webp' },
+  { city: 'San Diego', state: 'CA', type: 'Branch', image: '/locations/san-diego.webp' },
+  { city: 'Dallas', state: 'TX', type: 'Hub', image: '/locations/dallas.webp' },
+  { city: 'San Jose', state: 'CA', type: 'Branch', image: '/locations/san-Francisco.webp' },
+  { city: 'Austin', state: 'TX', type: 'Branch', image: '/locations/dallas.webp' },
+  { city: 'Seattle', state: 'WA', type: 'Tech Hub', image: '/locations/seattle.webp' },
+  { city: 'Denver', state: 'CO', type: 'Branch', image: '/locations/denver.webp' },
+  { city: 'Washington', state: 'DC', type: 'Gov', image: '/locations/washington-dc.webp' },
+  { city: 'Boston', state: 'MA', type: 'Branch', image: '/locations/boston.webp' },
+  { city: 'Miami', state: 'FL', type: 'Hub', image: '/locations/miami.webp' },
+  { city: 'Atlanta', state: 'GA', type: 'Hub', image: '/locations/atlanta.webp' },
+  { city: 'San Francisco', state: 'CA', type: 'Innovation', image: '/locations/san-Francisco.webp' },
 ];
 
 const HomePage: React.FC = () => {
@@ -187,6 +187,7 @@ const LocationPageWrapper: React.FC = () => {
       city={location.city}
       state={location.state}
       type={location.type}
+      image={location.image}
       onBack={() => navigate('/')}
       onGetQuote={() => navigate('/estimator')}
     />

@@ -1,7 +1,7 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { Resend } from 'npm:resend';
-import { PDFDocument, rgb, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1";
-import { encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
+
+import { Resend } from 'resend';
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { encode } from "std/encoding/base64.ts";
 
 async function createEstimatePdf(formData: any, estimate: any) {
     const pdfDoc = await PDFDocument.create();
@@ -49,7 +49,7 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders })
     }

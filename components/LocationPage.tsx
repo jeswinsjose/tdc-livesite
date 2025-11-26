@@ -12,11 +12,12 @@ interface LocationPageProps {
   city: string;
   state: string;
   type: string;
+  image?: string;
   onBack: () => void;
   onGetQuote: () => void;
 }
 
-const LocationPage: React.FC<LocationPageProps> = ({ city, state, type, onBack, onGetQuote }) => {
+const LocationPage: React.FC<LocationPageProps> = ({ city, state, type, image, onBack, onGetQuote }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -96,7 +97,7 @@ const LocationPage: React.FC<LocationPageProps> = ({ city, state, type, onBack, 
                       <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/20 to-purple-500/20 mix-blend-overlay z-10"></div>
                       {/* Placeholder for city skyline */}
                       <img 
-                          src={`https://picsum.photos/seed/${city}/800/600?grayscale&blur=2`} 
+                          src={image || `https://picsum.photos/seed/${city}/800/600?grayscale&blur=2`} 
                           alt={`${city} Architecture`} 
                           className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
                       />
