@@ -1,13 +1,96 @@
 
-import React, { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, CheckCircle, Send } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapPin, Phone, Mail, CheckCircle, Send, Loader2 } from 'lucide-react';
 import { getUserLocation, getNearestCity } from '../utils/location';
+import PhoneInput from './PhoneInput';
+import Select from './Select';
+import { supabase } from '../lib/supabaseClient';
+import gsap from 'gsap';
+
+const FIRM_TYPES = [
+  "Administration", "Architect", "BIM Manager", "Builder", "Business", "C-Level", 
+  "CAD Manager", "CAE Analyst", "Civil Engineer", "Construction Manager", "Contractor", 
+  "Designer", "Developer", "Director", "Drafter", "Electrical Contractor", 
+  "Electrical Engineer", "Electrical Subcontractors", "Engineer", "Estimator", 
+  "Fabricator", "Facility Maintenance", "Facilities Manager", "Fire Protection Contractor", 
+  "Fire Protection Designer", "Fire Protection Engineer", "Fire Protection Subcontractors", 
+  "General Contractor", "Industrial Designer", "Installer", "Interior Designer", 
+  "IT Manager", "Landscape Architect", "Machinist", "Manager", "Manufacturer", 
+  "Mechanical Contractor", "Mechanical Engineer", "Mechanical, Electrical & Plumbing Contractors", 
+  "Mechanical, Electrical & Plumbing Designers", "Mechanical, Electrical & Plumbing Trades", 
+  "Mechanical, Electrical & Plumbing Subcontractors", "Mechanical Subcontractor", 
+  "Modeler", "Non-Manager", "Owner", "Plumbing Contractor", "Plumbing Engineer", 
+  "Plumbing Subcontractors", "President", "Project Manager", "Research & Development", 
+  "Sales Manager", "Structural Engineer", "Subcontractors", "VDC Manager", "VP-Level", "Other"
+];
+
+const DISCIPLINES = [
+  "Architectural", "Civil", "Electrical", "Electrical High Voltage", "Electrical Low Voltage", 
+  "Electrical Low & High Voltage", "Fire Protection", "Glazing", "Landscaping", "Mechanical", 
+  "Mechanical Ducting", "Mechanical Piping", "Piping", "Plumbing", "Process Piping", 
+  "Structural", "Other"
+];
+
+const INDUSTRIES = [
+  "Airport", "Advertising, Publishing and Graphic Design", "Aerospace and Defense Equipment", 
+  "Architecture Services", "Assisted Living", "Building Products and Fabrication", 
+  "Building Construction", "Casino", "Civil Infrastructure", "Commercial", "Construction Services", 
+  "Consumer Products", "Creators", "Education", "Engineering Service Providers", "Entertainment", 
+  "Fabrication", "Family", "Film and TV", "Games", "Governmental", "Healthcare", "Hospital", 
+  "Industrial", "Industrial Machinery", "Manufacturer", "Military", "Mining", "Municipality", 
+  "Multi-family", "Oil and Gas", "Process Manufacturing", "Product Development", 
+  "Research & Development", "Residential", "Single Family", "Utilities and Telecom", "Other"
+];
+
+const SERVICES = [
+  "Laser Scanning", "BIM Modeling", "CAD Drafting", "3D Modeling"
+];
+
+const BIM_SERVICES = [
+  "BIM Modeling, Coordination, Shop Drawing & As-Built", "Laser Scanning to BIM", 
+  "BIM Custom Family Modeling", "BIM Foodservice", "BIM Revit Building Information Modeling", 
+  "Revit As-Built", "Revit Coordination", "Revit Custom Family Modeling", 
+  "Scan to BIM Modeling", "BIM Modeling", "BIM Coordination", "BIM Shop Drawings", "BIM As-Built"
+];
+
+const CAD_SERVICES = [
+  "AutoCAD Detailing", "AutoCAD Drafting", "CAD Conversion", "CAD Detailing", 
+  "CAD Drafting", "CAD Foodservice", "CAD Remastering", "Paper to CAD Conversion", 
+  "Laser Scanning to CAD"
+];
+
+const THREE_D_MODELING_SERVICES = [
+  "3D Printing", "Carbon DLS", "Metal 3D Printing", "Multi-Jet Fusion", "PolyJet", 
+  "Selective Laser Sintering", "Stereolithography", "3D Inventor, Modeling, Drafting, Detailing and Design", 
+  "3D SolidWorks Modeling, Drafting, Detailing & Design", "3D Revit BIM Modeling, Coordination, Shop Drawings & As-Builts", 
+  "Laser Scanning to 3D", "CREO", "CATIA"
+];
 
 const ContactSection: React.FC = () => {
   const [contactInfo, setContactInfo] = useState({
     address: '123 Innovation Drive,<br/>New York, NY 10001',
     phone: '(213) 571-9077'
   });
+
+  const [formData, setFormData] = useState({
+    firstNameLastName: '',
+    email: '',
+    landline: '',
+    ext: '',
+    cell: '',
+    companyName: '',
+    firmType: '',
+    discipline: '',
+    industry: '',
+    service: '',
+    subService: '',
+    scopeOfWork: '',
+    inputs: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const initLocation = async () => {
@@ -25,6 +108,70 @@ const ContactSection: React.FC = () => {
 
     initLocation();
   }, []);
+
+  useEffect(() => {
+    if (isSubmitted && successRef.current) {
+      gsap.fromTo(successRef.current, 
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+      );
+    }
+  }, [isSubmitted]);
+
+  const handleServiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      service: e.target.value,
+      subService: '' // Reset sub-service when service changes
+    });
+  };
+
+  const getSubServices = () => {
+    switch (formData.service) {
+      case "BIM Modeling": return BIM_SERVICES;
+      case "CAD Drafting": return CAD_SERVICES;
+      case "3D Modeling": return THREE_D_MODELING_SERVICES;
+      default: return [];
+    }
+  };
+
+  const subServices = getSubServices();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([
+          {
+            first_name_last_name: formData.firstNameLastName,
+            email: formData.email,
+            mobile_phone: formData.cell,
+            office_phone: formData.landline,
+            extension: formData.ext,
+            company_name: formData.companyName,
+            firm_type: formData.firmType,
+            discipline: formData.discipline,
+            industry: formData.industry,
+            service: formData.service,
+            sub_service: formData.subService,
+            scope_of_work: formData.scopeOfWork,
+            inputs: formData.inputs
+          }
+        ]);
+
+      if (error) throw error;
+
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to submit form. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section id="contact" className="py-24 bg-brand-dark border-t border-white/5 relative overflow-hidden">
@@ -97,50 +244,223 @@ const ContactSection: React.FC = () => {
           </div>
 
           {/* Right Column: Form */}
-          <div className="bg-zinc-900/40 backdrop-blur-md border border-white/10 p-8 md:p-10 rounded-2xl">
-            <h3 className="font-display text-2xl font-bold text-white mb-6">Send a Message</h3>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">First Name</label>
-                  <input type="text" className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors" placeholder="John" />
+          <div className="bg-zinc-900/40 backdrop-blur-md border border-white/10 p-8 md:p-10 rounded-2xl min-h-[600px] flex flex-col justify-center">
+            {isSubmitted ? (
+              <div ref={successRef} className="text-center space-y-6">
+                <div className="w-20 h-20 bg-brand-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle size={40} className="text-brand-accent" />
                 </div>
-                <div className="space-y-2">
-                   <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Last Name</label>
-                  <input type="text" className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors" placeholder="Doe" />
-                </div>
+                <h3 className="font-display text-3xl font-bold text-white">Message Sent!</h3>
+                <p className="text-gray-400 text-lg max-w-sm mx-auto">
+                  Thank you for reaching out. Our team will review your project details and get back to you within 24 hours.
+                </p>
+                <button 
+                  onClick={() => {
+                    setIsSubmitted(false);
+                    setFormData({
+                      firstNameLastName: '',
+                      email: '',
+                      landline: '',
+                      ext: '',
+                      cell: '',
+                      companyName: '',
+                      firmType: '',
+                      discipline: '',
+                      industry: '',
+                      service: '',
+                      subService: '',
+                      scopeOfWork: '',
+                      inputs: ''
+                    });
+                  }}
+                  className="mt-8 px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-white transition-colors"
+                >
+                  Send Another Message
+                </button>
               </div>
+            ) : (
+              <>
+                <h3 className="font-display text-2xl font-bold text-white mb-6">Send a Message</h3>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  
+                  {/* Row 1: Name & Email */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">First Name & Last Name *</label>
+                      <input 
+                        type="text" 
+                        required
+                        className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors" 
+                        placeholder="First Name & Last Name"
+                        value={formData.firstNameLastName}
+                        onChange={(e) => setFormData({...formData, firstNameLastName: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Email Address *</label>
+                      <input 
+                        type="email" 
+                        required
+                        className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors" 
+                        placeholder="Email Address" 
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      />
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                  <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Email Address</label>
-                  <input type="email" className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors" placeholder="john@company.com" />
-              </div>
+                  {/* Contact Numbers Section */}
+                  <div className="space-y-6">
+                    
+                    {/* Mobile Phone */}
+                    <PhoneInput 
+                      label="Mobile Phone *"
+                      value={formData.cell}
+                      onChange={(val) => setFormData({...formData, cell: val})}
+                      placeholder="(555) 000-0000"
+                    />
 
-               <div className="space-y-2">
-                  <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Project Type</label>
-                  <select className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors appearance-none">
-                    <option>Select a service...</option>
-                    <option>Laser Scanning</option>
-                    <option>BIM Coordination</option>
-                    <option>CAD Drafting</option>
-                    <option>Other</option>
-                  </select>
-              </div>
+                    {/* Office Phone & Extension */}
+                    <div className="flex gap-4">
+                      <div className="flex-grow">
+                        <PhoneInput 
+                          label="Office Phone & Extension"
+                          value={formData.landline}
+                          onChange={(val) => setFormData({...formData, landline: val})}
+                          placeholder="(555) 000-0000"
+                        />
+                      </div>
+                      <div className="w-24 space-y-2">
+                        <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Ext.</label>
+                        <input 
+                          type="text" 
+                          className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors" 
+                          placeholder="123"
+                          value={formData.ext}
+                          onChange={(e) => setFormData({...formData, ext: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                  <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Message</label>
-                  <textarea className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors h-32 resize-none" placeholder="Tell us about your project requirements..." />
-              </div>
+                  {/* Row 3: Company Name & Firm Type */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Company Name</label>
+                      <input 
+                        type="text" 
+                        className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors" 
+                        placeholder="Company Name"
+                        value={formData.companyName}
+                        onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                       <Select 
+                        label="Firm Type(s)"
+                        value={formData.firmType}
+                        onChange={(val) => setFormData({...formData, firmType: val})}
+                        options={FIRM_TYPES}
+                        placeholder="Select Firm Type"
+                       />
+                    </div>
+                  </div>
 
-              <button type="button" className="w-full bg-white text-black font-bold uppercase tracking-widest py-4 rounded-sm hover:bg-brand-accent transition-colors flex items-center justify-center gap-2 group">
-                Send Request
-                <Send size={16} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-              
-              <p className="text-xs text-center text-gray-600">
-                By submitting this form, you agree to our privacy policy.
-              </p>
-            </form>
+                  {/* Row 4: Discipline & Industry */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Select 
+                        label="Discipline(s)"
+                        value={formData.discipline}
+                        onChange={(val) => setFormData({...formData, discipline: val})}
+                        options={DISCIPLINES}
+                        placeholder="Select Discipline"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                       <Select 
+                        label="Industry(s)"
+                        value={formData.industry}
+                        onChange={(val) => setFormData({...formData, industry: val})}
+                        options={INDUSTRIES}
+                        placeholder="Select Industry"
+                       />
+                    </div>
+                  </div>
+
+                  {/* Row 5: Service */}
+                  <div className="space-y-2">
+                      <Select 
+                        label="Service(s)"
+                        value={formData.service}
+                        onChange={(val) => {
+                          setFormData({
+                            ...formData,
+                            service: val,
+                            subService: '' // Reset sub-service when service changes
+                          });
+                        }}
+                        options={SERVICES}
+                        placeholder="Select Service"
+                      />
+                  </div>
+
+                  {/* Row 6: Sub-Service (Conditional) */}
+                  {subServices.length > 0 && (
+                    <div className="space-y-2">
+                        <Select 
+                          label={`${formData.service} Service(s)`}
+                          value={formData.subService}
+                          onChange={(val) => setFormData({...formData, subService: val})}
+                          options={subServices}
+                          placeholder={`Select ${formData.service} Service`}
+                        />
+                    </div>
+                  )}
+
+                  {/* Row 7: Scope & Inputs */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Scope of work</label>
+                        <textarea 
+                          className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors h-32 resize-none" 
+                          placeholder="Scope of work"
+                          value={formData.scopeOfWork}
+                          onChange={(e) => setFormData({...formData, scopeOfWork: e.target.value})}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Input(s)</label>
+                        <textarea 
+                          className="w-full bg-black/50 border border-white/10 rounded px-4 py-3 text-white focus:border-brand-accent focus:outline-none transition-colors h-32 resize-none" 
+                          placeholder="Input(s)"
+                          value={formData.inputs}
+                          onChange={(e) => setFormData({...formData, inputs: e.target.value})}
+                        />
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full bg-white text-black font-bold uppercase tracking-widest py-4 rounded-sm hover:bg-brand-accent transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <>
+                        Send Request
+                        <Send size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                  
+                  <p className="text-xs text-center text-gray-600">
+                    By submitting this form, you agree to our privacy policy.
+                  </p>
+                </form>
+              </>
+            )}
           </div>
 
         </div>
@@ -150,3 +470,4 @@ const ContactSection: React.FC = () => {
 };
 
 export default ContactSection;
+
