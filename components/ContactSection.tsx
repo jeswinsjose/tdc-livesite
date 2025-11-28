@@ -85,14 +85,17 @@ const ContactSection: React.FC = () => {
     service: '',
     subService: '',
     scopeOfWork: '',
-    inputs: ''
+    inputs: '',
+    botField: '' // Honeypot field
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [mountTime, setMountTime] = useState(0);
   const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMountTime(Date.now());
     const initLocation = async () => {
       const location = await getUserLocation();
       if (location) {
@@ -139,6 +142,50 @@ const ContactSection: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Spam Protection Checks
+    
+    // 1. Honeypot check: If botField has a value, it's a bot.
+    if (formData.botField) {
+      console.log('Bot detected: Honeypot filled');
+      return; // Silent rejection
+    }
+
+    // 2. Time-based check: If submitted too quickly (< 3 seconds), it's likely a bot.
+    if (Date.now() - mountTime < 3000) {
+      console.log('Bot detected: Submission too fast');
+      return; // Silent rejection
+    }
+
+    // 3. Rate Limiting (Client-side): 10 submissions per hour
+    const HOURLY_LIMIT = 10;
+    const ONE_HOUR = 60 * 60 * 1000;
+    const now = Date.now();
+
+    let start = parseInt(localStorage.getItem('submissionStart') || '0');
+    let count = parseInt(localStorage.getItem('submissionCount') || '0');
+
+    // Reset if window expired or invalid
+    if (start === 0 || (now - start > ONE_HOUR)) {
+      start = now;
+      count = 0;
+      localStorage.setItem('submissionStart', start.toString());
+      localStorage.setItem('submissionCount', '0');
+    }
+
+    // Check limit
+    if (count >= HOURLY_LIMIT) {
+      alert('You have reached the maximum number of submissions (10) for this hour. Please try again later.');
+      return;
+    }
+
+    // Confirmation for subsequent submissions
+    if (count > 0) {
+      if (!window.confirm('You have already submitted a request. Do you want to submit another?')) {
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -163,6 +210,9 @@ const ContactSection: React.FC = () => {
         ]);
 
       if (error) throw error;
+
+      // Increment count on success
+      localStorage.setItem('submissionCount', (count + 1).toString());
 
       setIsSubmitted(true);
     } catch (error) {
@@ -283,6 +333,18 @@ const ContactSection: React.FC = () => {
                 <h3 className="font-display text-2xl font-bold text-white mb-6">Send a Message</h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   
+                  {/* Honeypot Field - Hidden from real users */}
+                  <div className="opacity-0 absolute top-0 left-0 h-0 w-0 overflow-hidden z-[-1]">
+                    <input
+                      type="text"
+                      name="website_url" // Innocuous name
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={formData.botField}
+                      onChange={(e) => setFormData({...formData, botField: e.target.value})}
+                    />
+                  </div>
+
                   {/* Row 1: Name & Email */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
