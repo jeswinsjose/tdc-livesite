@@ -27,7 +27,25 @@ export const Stepper = ({ currentStep }) => {
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4 sm:px-0">
-      <ol role="list" className="flex items-center justify-between">
+      {/* Mobile Progress Bar */}
+      <div className="block md:hidden mb-8">
+        <div className="flex justify-between items-end mb-2">
+          <div>
+            <span className="text-xs font-mono text-brand-accent uppercase tracking-widest">Step {currentStep} of {steps.length}</span>
+            <h3 className="text-lg font-display font-bold text-white mt-1">{steps[currentStep - 1]}</h3>
+          </div>
+          <span className="text-xs text-gray-500 font-mono">{Math.round((currentStep / steps.length) * 100)}%</span>
+        </div>
+        <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-brand-accent transition-all duration-500 ease-out"
+            style={{ width: `${(currentStep / steps.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Desktop Stepper */}
+      <ol role="list" className="hidden md:flex items-center justify-between">
         {steps.map((label, index) => {
           const stepNumber = index + 1;
           const isCompleted = currentStep > stepNumber;

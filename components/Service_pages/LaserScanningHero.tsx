@@ -70,7 +70,7 @@ export const LaserScanningHero: React.FC = () => {
           >
              <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold tracking-widest uppercase">
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                Architectural Intelligence
+                Laser Scanning Services
              </div>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
               The Foundation <br/>

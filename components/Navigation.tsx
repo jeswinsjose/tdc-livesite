@@ -51,7 +51,7 @@ const Navigation: React.FC = () => {
 
           <button 
             onClick={() => navigate('/estimator')}
-            className="flex items-center gap-2 text-xs md:text-sm font-medium text-brand-accent hover:text-white transition-colors"
+            className="flex items-center gap-2 text-xs md:text-sm font-medium text-brand-accent hover:text-white transition-colors cursor-pointer"
           >
             <span className="uppercase tracking-widest whitespace-nowrap">Get Quote</span>
             <div className="w-2 h-2 bg-brand-accent rounded-full animate-pulse shadow-[0_0_10px_#00f0ff]" />

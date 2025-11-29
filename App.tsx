@@ -105,7 +105,6 @@ const HomePage: React.FC = () => {
                 
             <ContactSection />
         </div>
-        <FloatingContact />
       </>
 
       {/* Footer */}
@@ -126,6 +125,7 @@ const App: React.FC = () => {
   return (
     <>
       <Navigation />
+      <FloatingContact />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/estimator" element={<EstimatorPage />} />
