@@ -20,9 +20,25 @@ export enum AiStatus {
   ERROR = 'ERROR'
 }
 
+import React, { ReactNode } from "react";
+
 export interface ProjectEstimate {
   serviceRecommended: string;
   estimatedDuration: string;
   complexityLevel: string;
   keyConsiderations: string[];
+}
+
+export interface FeatureProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
+export interface HardwareCardProps {
+  title: string;
+  description: string;
+  model: string;
+  image: string;
+  features: string[];
 }

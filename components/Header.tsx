@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Layers, Globe, X, MapPin, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import MegaMenu from './MegaMenu';
+import LocationsMegaMenu from './LocationsMegaMenu';
 
 interface HeaderProps {
   locations?: { city: string; state: string; type: string }[];
@@ -22,7 +24,37 @@ const DEFAULT_LOCATIONS = [
 
 const Header: React.FC<HeaderProps> = ({ locations = DEFAULT_LOCATIONS, onLocationSelect }) => {
   const [isLocationsOpen, setIsLocationsOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isLocationsMenuOpen, setIsLocationsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const servicesTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const locationsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleServicesMouseEnter = () => {
+    if (servicesTimeoutRef.current) {
+      clearTimeout(servicesTimeoutRef.current);
+    }
+    setIsServicesOpen(true);
+  };
+
+  const handleServicesMouseLeave = () => {
+    servicesTimeoutRef.current = setTimeout(() => {
+      setIsServicesOpen(false);
+    }, 150);
+  };
+
+  const handleLocationsMouseEnter = () => {
+    if (locationsTimeoutRef.current) {
+      clearTimeout(locationsTimeoutRef.current);
+    }
+    setIsLocationsMenuOpen(true);
+  };
+
+  const handleLocationsMouseLeave = () => {
+    locationsTimeoutRef.current = setTimeout(() => {
+      setIsLocationsMenuOpen(false);
+    }, 150);
+  };
 
   const handleSelect = (loc: { city: string; state: string; type: string }) => {
     if (onLocationSelect) {
@@ -33,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ locations = DEFAULT_LOCATIONS, onLocati
 
   return (
     <>
-      <nav className="sticky top-0 w-full z-40 px-6 py-6 flex items-center justify-between pointer-events-none">
+      <nav className="fixed top-0 left-0 right-0 w-full z-50 px-6 py-6 flex items-center justify-between pointer-events-none transition-all duration-300">
         {/* Logo - Pointer events auto to allow clicking */}
         <div 
             onClick={() => {
@@ -53,13 +85,48 @@ const Header: React.FC<HeaderProps> = ({ locations = DEFAULT_LOCATIONS, onLocati
 
         {/* Center Menu Container - Absolute positioning with flex centering */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="hidden lg:flex items-center gap-1 p-1.5 rounded-full border border-white/10 bg-zinc-900/80 backdrop-blur-md shadow-lg pointer-events-auto">
-              <a href="#services" className="px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider text-gray-400 hover:text-white hover:bg-white/10 transition-all">Services</a>
-              <a href="#map" className="px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider text-gray-400 hover:text-white hover:bg-white/10 transition-all">Locations</a>
+            <div className="hidden lg:flex items-center gap-1 p-1.5 rounded-full border border-white/10 bg-zinc-900/80 backdrop-blur-md shadow-lg pointer-events-auto relative">
+              <div 
+                onMouseEnter={handleServicesMouseEnter}
+                onMouseLeave={handleServicesMouseLeave}
+              >
+                <a 
+                  href="#services" 
+                  className={`px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all ${isServicesOpen ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
+                >
+                  Services
+                </a>
+              </div>
+              
+              <div 
+                onMouseEnter={handleLocationsMouseEnter}
+                onMouseLeave={handleLocationsMouseLeave}
+              >
+                <a 
+                  href="#map" 
+                  className={`px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all ${isLocationsMenuOpen ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
+                >
+                  Locations
+                </a>
+              </div>
+
               <a href="#portfolio" className="px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider text-gray-400 hover:text-white hover:bg-white/10 transition-all">Portfolio</a>
               <a href="#faq" className="px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider text-gray-400 hover:text-white hover:bg-white/10 transition-all">FAQ</a>
             </div>
         </div>
+
+        {/* Mega Menu - Positioned relative to nav */}
+        <MegaMenu 
+          isOpen={isServicesOpen} 
+          onMouseEnter={handleServicesMouseEnter}
+          onMouseLeave={handleServicesMouseLeave}
+        />
+
+        <LocationsMegaMenu 
+          isOpen={isLocationsMenuOpen} 
+          onMouseEnter={handleLocationsMouseEnter}
+          onMouseLeave={handleLocationsMouseLeave}
+        />
 
         {/* Location Trigger */}
         <button 
