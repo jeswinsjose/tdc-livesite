@@ -12,8 +12,8 @@ const Navigation: React.FC = () => {
 
   const menuItems = [
     { label: 'Services', img: 'https://picsum.photos/1920/1080?grayscale&blur=2', hasSubmenu: true },
-    { label: 'Projects', img: 'https://picsum.photos/1920/1080?grayscale&blur=3' },
     { label: 'Blog', img: 'https://picsum.photos/1920/1080?grayscale&blur=4' },
+    { label: 'Projects', img: 'https://picsum.photos/1920/1080?grayscale&blur=3' },
     { label: 'Technology', img: 'https://picsum.photos/1920/1080?grayscale&blur=4' },
     { label: 'About', img: 'https://picsum.photos/1920/1080?grayscale&blur=5' },
     { label: 'Careers', img: 'https://picsum.photos/1920/1080?grayscale&blur=6' },
