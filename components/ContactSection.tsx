@@ -383,7 +383,7 @@ const ContactSection: React.FC = () => {
                     />
 
                     {/* Office Phone & Extension */}
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                       <div className="flex-grow">
                         <PhoneInput 
                           label="Office Phone & Extension"
@@ -392,7 +392,7 @@ const ContactSection: React.FC = () => {
                           placeholder="(555) 000-0000"
                         />
                       </div>
-                      <div className="w-24 space-y-2">
+                      <div className="w-full sm:w-24 space-y-2">
                         <label className="text-xs font-mono uppercase text-gray-500 tracking-wider">Ext.</label>
                         <input 
                           type="text" 

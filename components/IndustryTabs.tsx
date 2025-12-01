@@ -1,34 +1,27 @@
 import React, { useState } from 'react';
-import { ChevronDown, ArrowRight, Building2, Plane, ShoppingBag, Factory, Home } from 'lucide-react';
+import { ChevronDown, ArrowRight, Building2, Factory, HardHat, PencilRuler } from 'lucide-react';
 
 const INDUSTRIES = [
   {
-    id: 'residential',
-    title: 'Residential Real Estate',
-    icon: Home,
-    description: 'Turn every property into a 24/7 open house. Reduce drive time, attract more qualified buyers, and accelerate your sales process with immersive 3D tours.',
+    id: 'gc',
+    title: 'General Contractors',
+    icon: HardHat,
+    description: 'Eliminate rework and keep projects on schedule. We provide high-precision BIM coordination, clash detection, and as-built verification to ensure what you build matches the model.',
+    image: '/images/industry_commercial.png'
+  },
+  {
+    id: 'architects',
+    title: 'Architects & Engineers',
+    icon: PencilRuler,
+    description: 'Design with confidence using accurate existing conditions. Our scan-to-BIM services deliver LOD 300-400 Revit models, allowing you to focus on design rather than field verification.',
     image: '/images/industry_residential.png'
   },
   {
-    id: 'travel',
-    title: 'Travel & Hospitality',
-    icon: Plane,
-    description: 'Showcase your amenities and rooms in stunning detail. Increase booking confidence and drive higher occupancy rates by letting guests explore before they arrive.',
-    image: '/images/industry_travel.png'
-  },
-  {
-    id: 'retail',
-    title: 'Retail',
-    icon: ShoppingBag,
-    description: 'Reimagine the shopping experience. Create virtual showrooms, plan store layouts efficiently, and manage inventory with precise spatial data.',
-    image: '/images/industry_retail.png'
-  },
-  {
-    id: 'commercial',
-    title: 'Commercial Real Estate',
+    id: 'facilities',
+    title: 'Facility Managers',
     icon: Building2,
-    description: 'Streamline leasing and facilities management. Provide remote tours to prospective tenants and maintain accurate digital records of your portfolio.',
-    image: '/images/industry_commercial.png'
+    description: 'Manage assets remotely with precise digital twins. Access equipment data, plan maintenance, and visualize space utilization without leaving your desk.',
+    image: '/images/industry_retail.png'
   },
   {
     id: 'manufacturing',

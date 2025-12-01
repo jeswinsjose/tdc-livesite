@@ -150,10 +150,10 @@ export const BlogPost: React.FC = () => {
       
       <article className="min-h-screen bg-[#050505]">
         {/* Hero Image */}
-        <div className="relative h-[60vh] w-full">
+        <div className="relative min-h-[60vh] w-full flex items-end pt-32">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050505] z-10" />
           <div className="absolute inset-0 bg-black/40 z-10" />
-          <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+          <img src={post.image} alt={post.title} className="absolute inset-0 w-full h-full object-cover" />
           
           {/* Edit Button - Disabled for Live Deployment */}
           {/* {isSignedIn && (
@@ -164,7 +164,7 @@ export const BlogPost: React.FC = () => {
             </div>
           )} */}
 
-          <div className="absolute bottom-0 left-0 w-full z-20 px-6 pb-20">
+          <div className="relative z-20 w-full px-6 pb-12 md:pb-20">
              <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
                <div className="lg:col-span-12">
                  <nav className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase mb-6 text-gray-400">
@@ -174,10 +174,10 @@ export const BlogPost: React.FC = () => {
                    <span className="text-gray-600">/</span>
                    <span className="text-tdc-cyan">{post.category}</span>
                  </nav>
-                 <h1 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight max-w-4xl">
+                 <h1 className="text-3xl md:text-6xl font-bold text-white mb-6 md:mb-8 leading-tight max-w-4xl">
                    {post.title}
                  </h1>
-                 <div className="flex flex-wrap items-center gap-8 text-sm text-gray-300 border-t border-white/10 pt-8">
+                 <div className="flex flex-wrap items-center gap-6 md:gap-8 text-sm text-gray-300 border-t border-white/10 pt-6 md:pt-8">
                    <div className="flex items-center gap-3">
                      <img src={post.author.avatar} alt={post.author.name} className="w-10 h-10 rounded-full object-cover" />
                      <div>
