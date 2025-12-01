@@ -1,0 +1,36 @@
+---
+title: "Building a Data-Driven Material Passport"
+slug: "sustainable-materials-database"
+date: "2025-11-15"
+author: "Elena Rodriguez"
+category: "Sustainability"
+tags: ["Circular Economy", "Materials", "Data"]
+thumbnail: "https://picsum.photos/id/60/800/600"
+excerpt: "How digital material passports are enabling the circular economy by tracking material lifecycle, carbon footprint, and reusability."
+---
+
+## What is a Material Passport?
+
+A Material Passport is a digital document set that records the characteristics of materials within a building. It provides value for recovery and reuse, essential for a circular economy.
+
+### The Role of Data
+
+At TDC, we are integrating material data directly into our BIM families. This allows for automated calculation of embodied carbon and potential resale value at the end of the building's lifecycle.
+
+*   **Identity**: What is it? (Manufacturer, SKU)
+*   **Composition**: What is it made of? (Chemical content, Recycled %)
+*   **Performance**: How does it perform? (R-value, Acoustic rating)
+
+## Implementing in Revit
+
+We use shared parameters to track this data.
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `Sustainability_Carbon` | Number | Embodied Carbon (kgCO2e) |
+| `Sustainability_Recyclability` | Text | Class A/B/C |
+| `Lifecycle_End` | Date | Estimated replacement date |
+
+## The Future of Circular Construction
+
+As regulations tighten around carbon emissions, the material passport will become as standard as the blueprint itself.

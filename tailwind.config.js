@@ -30,6 +30,13 @@ export default {
           500: '#3b82f6',
           900: '#1e3a8a',
         },
+        tdc: {
+          dark: '#050505',
+          card: '#121212',
+          cyan: '#00E5FF',
+          gray: '#A0A0A0',
+          border: '#2A2A2A'
+        }
       },
       backgroundImage: {
         'grid-pattern': "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)",

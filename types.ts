@@ -42,3 +42,25 @@ export interface HardwareCardProps {
   image: string;
   features: string[];
 }
+
+export interface Author {
+  name: string;
+  role: string;
+  avatar: string;
+}
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  readTime: string;
+  category: Category;
+  tags: string[];
+  image: string;
+  author: Author;
+}
+
+export type Category = 'All' | 'Technology' | 'BIM' | 'Sustainability' | 'Case Studies';

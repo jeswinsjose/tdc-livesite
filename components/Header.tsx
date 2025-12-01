@@ -110,6 +110,17 @@ const Header: React.FC<HeaderProps> = ({ locations = DEFAULT_LOCATIONS, onLocati
                 </a>
               </div>
 
+              <a 
+                href="/#/blog" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/blog');
+                }}
+                className="px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              >
+                Blog
+              </a>
+
               <a href="#portfolio" className="px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider text-gray-400 hover:text-white hover:bg-white/10 transition-all">Portfolio</a>
               <a href="#faq" className="px-5 py-2 rounded-full text-xs font-medium uppercase tracking-wider text-gray-400 hover:text-white hover:bg-white/10 transition-all">FAQ</a>
             </div>

@@ -144,3 +144,26 @@ input[type="date"] {
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
+
+/* Global Prose Overrides for Blockquotes */
+.prose blockquote {
+  border-left-color: #00E5FF !important;
+  border-left-width: 4px !important;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  font-style: italic;
+  color: #e5e7eb;
+  border-radius: 0 0.5rem 0.5rem 0;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  user-select: text;
+  cursor: text;
+}
+
+.prose blockquote p:first-of-type::before {
+  content: none;
+}
+
+.prose blockquote p:last-of-type::after {
+  content: none;
+}

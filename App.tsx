@@ -95,6 +95,7 @@ const HomePage: React.FC = () => {
                 <ClientLogos />
                 <FeatureSections />
                 <IndustryTabs />
+                <HomeBlogSection />
                 <MapSection onLocationSelect={(cityName) => {
                     const loc = LOCATIONS_DATA.find(l => l.city === cityName);
                     if (loc) handleLocationSelect(loc);
@@ -116,24 +117,64 @@ const HomePage: React.FC = () => {
 };
 
 import ScanToBimPage from './components/Service_pages/ScanToBimPage';
-
 import LaserScanningPage from './components/Service_pages/LaserScanningPage';
+import { BlogList } from './pages/BlogList';
+import { BlogPost as BlogPostPage } from './pages/BlogPost';
+import { AdminDashboard as AdminDashboardPage } from './pages/AdminDashboard';
+import { BlogEditor } from './pages/BlogEditor';
+import { BlogProvider } from './context/BlogContext';
+import { useLocation } from 'react-router-dom';
+import { ClerkProvider } from '@clerk/clerk-react';
+import { SignInPage } from './pages/SignInPage';
+import { ProtectedRoute } from './components/Auth/ProtectedRoute';
+import HomeBlogSection from './components/HomeBlogSection';
 
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
+if (!PUBLISHABLE_KEY) {
+  console.error("Missing Publishable Key");
+}
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
   return (
     <>
-      <Navigation />
-      <FloatingContact />
+      {!isAdmin && <Navigation />}
+      {!isAdmin && <FloatingContact />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/estimator" element={<EstimatorPage />} />
         <Route path="/locations/:citySlug" element={<LocationPageWrapper />} />
         <Route path="/services/scan-to-bim" element={<ScanToBimPage />} />
         <Route path="/services/laser-scanning" element={<LaserScanningPage />} />
+        
+        {/* Auth Routes */}
+        <Route path="/sign-in/*" element={<SignInPage />} />
+
+        {/* Blog Routes */}
+        <Route path="/blog" element={<BlogList />} />
+        <Route path="/post/:slug" element={<BlogPostPage />} />
+        
+        {/* Protected Admin Routes - Disabled for Live Deployment */}
+        {/* <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/new" element={<BlogEditor />} />
+          <Route path="/admin/edit/:slug" element={<BlogEditor />} />
+        </Route> */}
       </Routes>
     </>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <BlogProvider>
+        <AppContent />
+      </BlogProvider>
+    </ClerkProvider>
   );
 };
 
