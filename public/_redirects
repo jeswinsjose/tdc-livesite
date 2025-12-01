@@ -1,1 +1,3 @@
-/*    /index.html   200
+# Cloudflare Pages SPA Redirect
+# Ensure that all non-asset requests are routed to index.html
+/* /index.html 200
