@@ -37,54 +37,90 @@ const deg2rad = (deg: number): number => {
     return deg * (Math.PI / 180);
 };
 
+const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeout = 5000) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(id);
+        return response;
+    } catch (error) {
+        clearTimeout(id);
+        throw error;
+    }
+};
+
 export const getUserLocation = async (): Promise<{ latitude: number; longitude: number } | null> => {
     // Check cache first
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
-        const data: UserLocation = JSON.parse(cached);
-        if (Date.now() - data.timestamp < CACHE_DURATION) {
-            return { latitude: data.latitude, longitude: data.longitude };
+        try {
+            const data: UserLocation = JSON.parse(cached);
+            if (Date.now() - data.timestamp < CACHE_DURATION) {
+                console.log('Using cached location');
+                return { latitude: data.latitude, longitude: data.longitude };
+            }
+        } catch (e) {
+            console.warn('Error parsing cached location:', e);
+            localStorage.removeItem(CACHE_KEY);
         }
     }
 
-    try {
-        // Attempt 1: IPStack (if key is present)
-        if (IPSTACK_API_KEY) {
-            try {
-                const ipstackUrl = `https://api.ipstack.com/check?access_key=${IPSTACK_API_KEY}`;
-                const response = await fetch(ipstackUrl);
-                const data = await response.json();
+    const saveToCache = (lat: number, lng: number) => {
+        const locationData: UserLocation = {
+            latitude: lat,
+            longitude: lng,
+            timestamp: Date.now(),
+        };
+        localStorage.setItem(CACHE_KEY, JSON.stringify(locationData));
+    };
 
-                if (data.latitude && data.longitude) {
-                    const locationData: UserLocation = {
-                        latitude: data.latitude,
-                        longitude: data.longitude,
-                        timestamp: Date.now(),
-                    };
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(locationData));
-                    return { latitude: data.latitude, longitude: data.longitude };
-                }
-            } catch (err) {
-                console.warn('IPStack fetch failed, trying fallback...');
+    // Attempt 1: IPStack (Primary)
+    if (IPSTACK_API_KEY) {
+        try {
+            console.log('Attempting to fetch location from IPStack...');
+            const ipstackUrl = `https://api.ipstack.com/check?access_key=${IPSTACK_API_KEY}`;
+            const response = await fetchWithTimeout(ipstackUrl, {}, 5000);
+
+            if (!response.ok) throw new Error(`IPStack returned ${response.status}`);
+
+            const data = await response.json();
+
+            if (data.latitude && data.longitude) {
+                console.log('Location fetched from IPStack');
+                saveToCache(data.latitude, data.longitude);
+                return { latitude: data.latitude, longitude: data.longitude };
+            } else {
+                console.warn('IPStack response missing coordinates:', data);
             }
+        } catch (err) {
+            console.warn('IPStack fetch failed:', err);
         }
+    } else {
+        console.warn('No IPStack API key found, skipping primary provider.');
+    }
 
-        // Attempt 2: Fallback to ipapi.co
-        const fallbackResponse = await fetch('https://ipapi.co/json/');
+    // Attempt 2: ipapi.co (Secondary Fallback)
+    try {
+        console.log('Attempting to fetch location from ipapi.co (fallback)...');
+        const fallbackResponse = await fetchWithTimeout('https://ipapi.co/json/', {}, 5000);
+
+        if (!fallbackResponse.ok) throw new Error(`ipapi.co returned ${fallbackResponse.status}`);
+
         const fallbackData = await fallbackResponse.json();
 
         if (fallbackData.latitude && fallbackData.longitude) {
-            const locationData: UserLocation = {
-                latitude: fallbackData.latitude,
-                longitude: fallbackData.longitude,
-                timestamp: Date.now(),
-            };
-            localStorage.setItem(CACHE_KEY, JSON.stringify(locationData));
+            console.log('Location fetched from ipapi.co');
+            saveToCache(fallbackData.latitude, fallbackData.longitude);
             return { latitude: fallbackData.latitude, longitude: fallbackData.longitude };
+        } else {
+            console.warn('ipapi.co response missing coordinates:', fallbackData);
         }
-
     } catch (error) {
-        console.error('Error fetching location:', error);
+        console.error('All location services failed:', error);
     }
 
     return null;
