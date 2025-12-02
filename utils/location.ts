@@ -1,6 +1,9 @@
 import cityData from '../data/city.json';
 
 const IPSTACK_API_KEY = import.meta.env.VITE_IPSTACK_API_KEY;
+const IPGEOLOCATION_API_KEY = import.meta.env.VITE_IPGEOLOCATION_API_KEY;
+const ABSTRACT_API_KEY = import.meta.env.VITE_ABSTRACT_API_KEY;
+
 const CACHE_KEY = 'user_location_cache';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -78,10 +81,57 @@ export const getUserLocation = async (): Promise<{ latitude: number; longitude: 
         localStorage.setItem(CACHE_KEY, JSON.stringify(locationData));
     };
 
-    // Attempt 1: IPStack (Primary)
+    // Attempt 1: ipgeolocation.io (Primary)
+    if (IPGEOLOCATION_API_KEY) {
+        try {
+            const url = `https://api.ipgeolocation.io/ipgeo?apiKey=${IPGEOLOCATION_API_KEY}`;
+            const response = await fetchWithTimeout(url, {}, 5000);
+
+            if (!response.ok) throw new Error(`ipgeolocation.io returned ${response.status}`);
+
+            const data = await response.json();
+
+            if (data.latitude && data.longitude) {
+                const lat = parseFloat(data.latitude);
+                const lng = parseFloat(data.longitude);
+                saveToCache(lat, lng);
+                return { latitude: lat, longitude: lng };
+            } else {
+                console.warn('ipgeolocation.io response missing coordinates:', data);
+            }
+        } catch (err) {
+            console.warn('ipgeolocation.io fetch failed:', err);
+        }
+    } else {
+        console.warn('No IPGeolocation API key found, skipping primary provider.');
+    }
+
+    // Attempt 2: Abstract API (Secondary)
+    if (ABSTRACT_API_KEY) {
+        try {
+            const url = `https://ip-intelligence.abstractapi.com/v1/?api_key=${ABSTRACT_API_KEY}`;
+            const response = await fetchWithTimeout(url, {}, 5000);
+
+            if (!response.ok) throw new Error(`Abstract API returned ${response.status}`);
+
+            const data = await response.json();
+
+            if (data.latitude && data.longitude) {
+                saveToCache(data.latitude, data.longitude);
+                return { latitude: data.latitude, longitude: data.longitude };
+            } else {
+                console.warn('Abstract API response missing coordinates:', data);
+            }
+        } catch (err) {
+            console.warn('Abstract API fetch failed:', err);
+        }
+    } else {
+        console.warn('No Abstract API key found, skipping secondary provider.');
+    }
+
+    // Attempt 3: IPStack (Tertiary)
     if (IPSTACK_API_KEY) {
         try {
-            console.log('Attempting to fetch location from IPStack...');
             const ipstackUrl = `https://api.ipstack.com/check?access_key=${IPSTACK_API_KEY}`;
             const response = await fetchWithTimeout(ipstackUrl, {}, 5000);
 
@@ -90,7 +140,6 @@ export const getUserLocation = async (): Promise<{ latitude: number; longitude: 
             const data = await response.json();
 
             if (data.latitude && data.longitude) {
-                console.log('Location fetched from IPStack');
                 saveToCache(data.latitude, data.longitude);
                 return { latitude: data.latitude, longitude: data.longitude };
             } else {
@@ -100,27 +149,7 @@ export const getUserLocation = async (): Promise<{ latitude: number; longitude: 
             console.warn('IPStack fetch failed:', err);
         }
     } else {
-        console.warn('No IPStack API key found, skipping primary provider.');
-    }
-
-    // Attempt 2: ipapi.co (Secondary Fallback)
-    try {
-        console.log('Attempting to fetch location from ipapi.co (fallback)...');
-        const fallbackResponse = await fetchWithTimeout('https://ipapi.co/json/', {}, 5000);
-
-        if (!fallbackResponse.ok) throw new Error(`ipapi.co returned ${fallbackResponse.status}`);
-
-        const fallbackData = await fallbackResponse.json();
-
-        if (fallbackData.latitude && fallbackData.longitude) {
-            console.log('Location fetched from ipapi.co');
-            saveToCache(fallbackData.latitude, fallbackData.longitude);
-            return { latitude: fallbackData.latitude, longitude: fallbackData.longitude };
-        } else {
-            console.warn('ipapi.co response missing coordinates:', fallbackData);
-        }
-    } catch (error) {
-        console.error('All location services failed:', error);
+        console.warn('No IPStack API key found, skipping tertiary provider.');
     }
 
     return null;
