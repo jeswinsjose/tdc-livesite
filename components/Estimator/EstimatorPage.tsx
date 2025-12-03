@@ -25,7 +25,7 @@ import { Step4_ConfigureProject } from "./steps/Step4_ConfigureProject";
 import { Step5_ScanDates } from "./steps/Step5_ScanDates";
 // @ts-ignore
 import { Step6_EstimateSummary } from "./steps/Step6_EstimateSummary";
-import { LoadScript } from "@react-google-maps/api";
+import { useJsApiLoader } from "@react-google-maps/api";
 // @ts-ignore
 import { supabase } from "../../lib/supabaseClient";
 
@@ -270,21 +270,14 @@ const LoadingScreen = () => (
 );
 
 export default function EstimatorPage() {
-  const [mapsLoaded, setMapsLoaded] = React.useState(false);
-  const [mapsError, setMapsError] = React.useState(false);
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
-  // If maps fails to load, show content anyway after 500ms
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!mapsLoaded) {
-        setMapsError(true);
-      }
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, [mapsLoaded]);
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: apiKey,
+    libraries: libraries,
+  });
 
-  // If no API key, render without Maps
+  // If no API key, render without Maps (or handle as needed)
   if (!apiKey) {
     return (
       <EstimateProvider>
@@ -293,17 +286,17 @@ export default function EstimatorPage() {
     );
   }
 
-  // Always render content immediately, let Maps load in background
+  if (loadError) {
+    return <div>Map cannot be loaded</div>;
+  }
+
+  if (!isLoaded) {
+    return <LoadingScreen />;
+  }
+
   return (
     <EstimateProvider>
-      <LoadScript
-        googleMapsApiKey={apiKey}
-        libraries={libraries}
-        onLoad={() => setMapsLoaded(true)}
-        onError={() => setMapsError(true)}
-      >
-        <AppContent />
-      </LoadScript>
+      <AppContent />
     </EstimateProvider>
   );
 }

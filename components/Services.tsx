@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Box, ScanLine, PenTool, ArrowUpRight } from 'lucide-react';
+import { Box, ScanLine, PenTool, ArrowUpRight, Cuboid } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const SERVICES = [
   {
@@ -41,11 +42,25 @@ const SERVICES = [
     hoverBgBullet: 'group-hover:bg-orange-400',
     glowColor: 'bg-orange-500/20',
     features: ['Paper to CAD', 'Shop Drawings', 'Structural Detail']
+  },
+  {
+    id: 'solid-modeling',
+    title: '3D Solid Modeling',
+    description: 'Create precise, watertight 3D models for manufacturing, prototyping, and product design. We deliver high-fidelity solid models compatible with all major CAD software.',
+    icon: Cuboid,
+    // Emerald Theme
+    hoverText: 'group-hover:text-emerald-400',
+    hoverBorder: 'group-hover:border-emerald-500/50',
+    hoverShadow: 'group-hover:shadow-[0_10px_40px_-10px_rgba(52,211,153,0.2)]',
+    hoverBgBullet: 'group-hover:bg-emerald-400',
+    glowColor: 'bg-emerald-500/20',
+    features: ['Product Design', 'Manufacturing Ready', 'Prototyping']
   }
 ];
 
 const ServiceCard: React.FC<{ service: typeof SERVICES[0]; index: number }> = ({ service, index }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isActive, setIsActive] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -78,13 +93,23 @@ const ServiceCard: React.FC<{ service: typeof SERVICES[0]; index: number }> = ({
       rotateY: 0,
       ease: 'power2.out'
     });
+    setIsActive(false);
+  };
+
+  const handleClick = () => {
+    setIsActive(!isActive);
   };
 
   return (
-    <div 
+    <motion.div 
       className="perspective-1000 w-full h-full"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <div 
         ref={cardRef}
@@ -93,36 +118,37 @@ const ServiceCard: React.FC<{ service: typeof SERVICES[0]; index: number }> = ({
           bg-zinc-900/40 backdrop-blur-md border border-white/5
           transition-all duration-500 ease-out
           hover:-translate-y-2 hover:bg-zinc-800/60
+          ${isActive ? '-translate-y-2 bg-zinc-800/60 ' + service.hoverBorder + ' ' + service.hoverShadow : ''}
           ${service.hoverBorder} ${service.hoverShadow}
         `}
       >
-        {/* Glow Effect Blob - Inactive by default (opacity-0), fades in on hover */}
-        <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${service.glowColor}`} />
+        {/* Glow Effect Blob - Inactive by default (opacity-0), fades in on hover or active */}
+        <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isActive ? 'opacity-100' : ''} ${service.glowColor}`} />
         
         <div>
           {/* Icon: Default White, Hover Color */}
-          <service.icon className={`w-12 h-12 mb-8 transition-colors duration-500 text-white ${service.hoverText}`} />
+          <service.icon className={`w-12 h-12 mb-8 transition-colors duration-500 text-white ${isActive ? service.hoverText.replace('group-hover:', '') : service.hoverText}`} />
           
-          <h3 className="font-display text-2xl font-bold mb-4 text-white group-hover:text-white transition-colors duration-300">
+          <h3 className={`font-display text-2xl font-bold mb-4 text-white transition-colors duration-300 ${isActive ? 'text-white' : 'group-hover:text-white'}`}>
             {service.title}
           </h3>
           
-          <p className="text-gray-400 text-sm leading-relaxed mb-8 group-hover:text-gray-300 transition-colors duration-300">
+          <p className={`text-gray-400 text-sm leading-relaxed mb-8 transition-colors duration-300 ${isActive ? 'text-gray-300' : 'group-hover:text-gray-300'}`}>
             {service.description}
           </p>
         </div>
 
         <ul className="space-y-3 relative z-10">
             {service.features.map((feature, i) => (
-                <li key={i} className="flex items-center gap-3 text-xs md:text-sm text-gray-500 font-mono group-hover:text-gray-300 transition-colors duration-300">
+                <li key={i} className={`flex items-center gap-3 text-xs md:text-sm text-gray-500 font-mono transition-colors duration-300 ${isActive ? 'text-gray-300' : 'group-hover:text-gray-300'}`}>
                     {/* Bullet: Default Gray-600, Hover Color */}
-                    <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 bg-gray-600 ${service.hoverBgBullet}`} />
+                    <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 bg-gray-600 ${isActive ? service.hoverBgBullet.replace('group-hover:', '') : service.hoverBgBullet}`} />
                     {feature}
                 </li>
             ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -140,7 +166,7 @@ const Services: React.FC = () => {
             </a>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {SERVICES.map((service, idx) => (
             <ServiceCard key={service.id} service={service} index={idx} />
           ))}
