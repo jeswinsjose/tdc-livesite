@@ -181,7 +181,7 @@ const AppContent = () => {
             )}
             {renderStep()}
           </div>
-          <div className="h-96 lg:h-auto">{renderRightColumn()}</div>
+          <div className="w-full h-48 lg:h-auto">{renderRightColumn()}</div>
         </div>
       </main>
     </div>
